@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  webapi:
+    container_name: semaphore-api-stage
+    build: .
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql-db
+      - redis-db
+    restart: always
+  mysql-db:
+    container_name: mysql-db-stage
+    image: mysql:8.0
+    restart: always
+    ports:
+      - ${MYSQL_PORT_DOCKER}:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD_DOCKER}
+    volumes:
+      - mysql-data:/var/lib/mysql
+  redis-db:
+    container_name: redis-db-stage
+    image: redis:6.0
+    restart: always
+    ports:
+      - ${REDIS_PORT_DOCKER}:6379
+    command: 'redis-server --appendonly yes --requirepass ${REDIS_PASSWORD_DOCKER}'
+volumes:
+  mysql-data:
+    driver: local

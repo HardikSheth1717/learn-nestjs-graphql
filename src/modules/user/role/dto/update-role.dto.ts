@@ -1,4 +1,4 @@
-import { OmitType, PartialType } from '@nestjs/swagger';
+import { Field, InputType, Int, PartialType, OmitType } from '@nestjs/graphql';
 import {
 	IsDateString,
 	IsDefined,
@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 import { CreateRoleDto } from './create-role.dto';
 
+@InputType()
 export class UpdateRoleDto extends PartialType(
 	OmitType(CreateRoleDto, ['createdBy', 'createdDate'] as const)
 ) {
@@ -17,6 +18,7 @@ export class UpdateRoleDto extends PartialType(
 	@IsDefined()
 	@IsInt()
 	@IsPositive()
+	@Field(() => Int!)
 	roleId: number;
 
 	/**
@@ -25,6 +27,7 @@ export class UpdateRoleDto extends PartialType(
 	@IsOptional()
 	@IsInt()
 	@IsPositive()
+	@Field({ nullable: true })
 	modifiedBy: number;
 
 	/**
@@ -32,5 +35,6 @@ export class UpdateRoleDto extends PartialType(
 	 */
 	@IsOptional()
 	@IsDateString()
+	@Field({ nullable: true })
 	modifiedDate: string = new Date().toISOString();
 }

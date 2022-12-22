@@ -1,3 +1,4 @@
+import { Field, InputType, Int } from '@nestjs/graphql';
 import { Transform, TransformFnParams } from 'class-transformer';
 import {
 	IsDefined,
@@ -13,6 +14,7 @@ import {
 /**
  * A DTO class for Role.
  */
+@InputType()
 export class CreateRoleDto {
 	/**
 	 * Name of the role.
@@ -21,6 +23,7 @@ export class CreateRoleDto {
 	@IsNotEmpty()
 	@Length(2, 100)
 	@Transform(({ value }: TransformFnParams) => value.trim())
+	@Field()
 	roleName: string;
 
 	/**
@@ -29,6 +32,7 @@ export class CreateRoleDto {
 	@IsOptional()
 	@IsInt()
 	@IsPositive()
+	@Field({ nullable: true })
 	createdBy: number;
 
 	/**
@@ -36,6 +40,7 @@ export class CreateRoleDto {
 	 */
 	@IsOptional()
 	@IsDateString()
+	@Field({ nullable: true })
 	createdDate: string = new Date().toISOString();
 
 	/**
@@ -43,6 +48,8 @@ export class CreateRoleDto {
 	 */
 	@IsDefined()
 	@IsBoolean()
+	@Field()
+	@Field({ nullable: true, defaultValue: false })
 	isSystem: boolean;
 
 	/**
@@ -50,5 +57,7 @@ export class CreateRoleDto {
 	 */
 	@IsOptional()
 	@IsBoolean()
+	@Field()
+	@Field({ nullable: true, defaultValue: false })
 	isDefault?: boolean = false;
 }

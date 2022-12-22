@@ -9,7 +9,7 @@ import {
 	ParseIntPipe,
 	Body
 } from '@nestjs/common';
-import { Resolver, Query, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Args, Int, Mutation } from '@nestjs/graphql';
 
 import { DIToken } from '@core/enums/ditoken.enum';
 
@@ -63,38 +63,36 @@ export class RoleResolver extends BaseController {
 	 * Create new role.
 	 * @param {CreateRoleDto} data - Data which need to be stored in database table.
 	 */
-	@Post()
 	@Permissions(`ROLE:${PermissionEnum.CREATE}`)
+	@Mutation(() => RoleEntity, { name:'createRole', description: 'Create new role.' })
 	public async create(
-		@Body() data: CreateRoleDto,
-		@User() user: UserAccountEntity
-	): Promise<number> {
-		data.createdBy = user.userId;
-		return (await this.roleService.create(data)).roleId;
+		@Args('data') data: CreateRoleDto
+	): Promise<RoleEntity> {
+		data.createdBy = 1;//user.userId;
+		return (await this.roleService.create(data));
 	}
 
 	/**
 	 * Update an existing role.
 	 * @param {UpdateRoleDto} data - Data which need to be stored in database table.
 	 */
-	@Put()
 	@Permissions(`ROLE:${PermissionEnum.MODIFY}`)
+	@Mutation(() => RoleEntity, { name:'updateRole', description: 'Update an existing role.' })
 	public async update(
-		@Body() data: UpdateRoleDto,
-		@User() user: UserAccountEntity
-	): Promise<boolean> {
-		data.modifiedBy = user.userId;
-		return (await this.roleService.update(data.roleId, data)).roleId > 0;
+		@Args('data') data: UpdateRoleDto
+	): Promise<RoleEntity> {
+		data.modifiedBy = 1;//user.userId;
+		return (await this.roleService.update(data.roleId, data));
 	}
 
 	/**
 	 * Delete role based on the given role id.
 	 * @param {number} id - a unique id / primary key.
 	 */
-	@Delete(':id')
 	@Permissions(`ROLE:${PermissionEnum.DELETE}`)
+	@Mutation(() => Boolean, { name:'deleteRole', description: 'Delete role based on the given role id.' })
 	public async delete(
-		@Param('id', ParseIntPipe) id: number
+		@Args('id', { type: () => Int, description: 'a unique id / primary key.', nullable: false }) id: number
 	): Promise<boolean> {
 		return (await this.roleService.delete(id)).affected > 0;
 	}

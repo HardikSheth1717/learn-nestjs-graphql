@@ -46,3 +46,34 @@ type Query {
     id: Int!
   ): Role!
 }
+
+type Mutation {
+  """Create new role."""
+  createRole(data: CreateRoleDto!): Role!
+
+  """Update an existing role."""
+  updateRole(data: UpdateRoleDto!): Role!
+
+  """Delete role based on the given role id."""
+  deleteRole(
+    """a unique id / primary key."""
+    id: Int!
+  ): Boolean!
+}
+
+input CreateRoleDto {
+  roleName: String!
+  createdBy: Float
+  createdDate: String = "2022-12-22T10:57:07.890Z"
+  isSystem: Boolean = false
+  isDefault: Boolean = false
+}
+
+input UpdateRoleDto {
+  roleName: String
+  isSystem: Boolean = false
+  isDefault: Boolean = false
+  roleId: Int!
+  modifiedBy: Float
+  modifiedDate: String = "2022-12-22T10:57:07.891Z"
+}
